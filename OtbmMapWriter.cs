@@ -2,27 +2,27 @@
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using Tibia.Objects;
 
 namespace MapTracker.NET
 {
-    public class MapWriter
+    public class OtbmMapWriter : OtFileManager
     {
-        public static byte NodeStart = 0xFE;
-        public static byte NodeEnd = 0xFF;
-        public static byte Escape = 0xFD;
-
-        public static long MapSizePosition = 10;
-
+        #region Vars/Properties
         private string fileName;
         private FileStream fileStream;
         public bool CanWrite { get; private set; }
+        #endregion
 
-        public MapWriter(string fileName)
+        #region Constructor
+        public OtbmMapWriter(string fileName)
         {
             this.fileName = fileName;
             CanWrite = OpenFile();
         }
+        #endregion
 
+        #region Open/Close
         private bool OpenFile()
         {
             try
@@ -40,7 +40,9 @@ namespace MapTracker.NET
         {
             fileStream.Close();
         }
+        #endregion
 
+        #region Write
         public void WriteHeader()
         {
             // Version, unescaped
@@ -153,5 +155,44 @@ namespace MapTracker.NET
             WriteByte((byte)loc.X);
             WriteByte((byte)loc.Y);
         }
+        #endregion
+
+        #region Static Methods
+        public static void WriteMapTilesToFile(IEnumerable<OtMapTile> mapTiles)
+        {
+            string fn = Directory.GetCurrentDirectory() + "\\mapdump_" + DateTime.Now.ToString("dd-MM-yyyy_HH-mm-ss.ffff") + ".otbm";
+            OtbmMapWriter mapWriter = new OtbmMapWriter(fn);
+            mapWriter.WriteHeader();
+            mapWriter.WriteMapStart();
+            foreach (OtMapTile tile in mapTiles)
+            {
+                mapWriter.WriteNodeStart(NodeType.TileArea);
+                mapWriter.WriteTileAreaCoords(tile.Location);
+                mapWriter.WriteNodeStart(NodeType.Tile);
+                mapWriter.WriteTileCoords(tile.Location);
+
+                mapWriter.WriteAttrType(AttrType.Item);
+                mapWriter.WriteUInt16(tile.TileId);
+
+                foreach (OtMapItem item in tile.Items)
+                {
+                    mapWriter.WriteNodeStart(NodeType.Item);
+                    mapWriter.WriteUInt16(item.ItemId);
+                    if (item.AttrType != AttrType.None)
+                    {
+                        mapWriter.WriteAttrType(item.AttrType);
+                        mapWriter.WriteByte(item.Extra);
+                    }
+                    mapWriter.WriteNodeEnd();
+                }
+
+                mapWriter.WriteNodeEnd();
+                mapWriter.WriteNodeEnd();
+            }
+            mapWriter.WriteNodeEnd(); // Map Data node
+            mapWriter.WriteNodeEnd(); // Root node
+            mapWriter.Close();
+        }
+        #endregion
     }
 }

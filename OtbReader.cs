@@ -1,34 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.IO;
 
 namespace MapTracker.NET
 {
-    public class TibiaItem
+    public class OtbReader : OtFileManager
     {
-        public int serverId;
-        public bool hasExtraByte;
-        public AttrType type;
-    }
-
-    public class ItemsReader
-    {
-        public const byte NodeStart = 0xFE;
-        public const byte NodeEnd = 0xFF;
-        public const byte Escape = 0xFD;
-
         private string fileName = "items.otb";
-        public static Dictionary<ushort, TibiaItem> clientToServerDict;
+        private Dictionary<ushort, ushort> clientToServerDict;
         FileStream stream;
         byte[] buffer = new byte[128];
 
-        public ItemsReader()
+        public OtbReader()
         {
-            clientToServerDict = new Dictionary<ushort, TibiaItem>();
+            clientToServerDict = new Dictionary<ushort, ushort>();
         }
-
-        public void GetClientToServerDictionary()
+        
+        public Dictionary<ushort, ushort> GetClientToServerDictionary()
         {
             stream = File.OpenRead(fileName);
 
@@ -46,8 +36,8 @@ namespace MapTracker.NET
                         else
                         {
                             int type = stream.ReadByte();
-                            if (type >=0 && type <= 18)
-                                HandleItem(type);
+                            if (type >=0 && type <= 13)
+                                HandleItem();
                             break;
                         }
                         break;
@@ -67,15 +57,15 @@ namespace MapTracker.NET
                 }
             }
 
-            return;
+            return clientToServerDict;
         }
 
-        private void HandleItem(int itemGroup)
+        private void HandleItem()
         {
             ushort serverId = 0;
             ushort clientId = 0;
-            // 4 flag bytes
-            ushort flags = BitConverter.ToUInt16(ReadAndUnescape(4), 0);
+            // skip 4 flag bytes
+            ReadAndUnescape(4);
 
             byte attr = ReadAndUnescape(1)[0];
             ushort len = BitConverter.ToUInt16(ReadAndUnescape(2), 0);
@@ -92,34 +82,7 @@ namespace MapTracker.NET
             }
 
             if (clientId > 0 && !clientToServerDict.ContainsKey(clientId))
-            {
-                TibiaItem ti = new TibiaItem();
-                ti.serverId = serverId;
-                ti.type = AttrType.None;
-
-                if ((flags & 128) == 128)
-                {
-                    ti.type = AttrType.Count;
-                }
-
-                if (itemGroup == 6) // rune
-                {
-                    ti.type = AttrType.Charges;
-                }
-
-                if (itemGroup == 11) // stacks
-                {
-                    ti.type = AttrType.Count;
-                }
-
-                //if (itemGroup == 12) // fluid
-                //{
-                //    ti.attribute = 4;
-                //    ti.hasExtraByte = true;
-                //}
-
-                clientToServerDict.Add(clientId, ti);
-            }
+                clientToServerDict.Add(clientId, serverId);
         }
 
         private byte[] ReadAndUnescape(int count)
