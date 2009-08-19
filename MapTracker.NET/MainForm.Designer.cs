@@ -34,17 +34,17 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.uxLog = new System.Windows.Forms.TextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.uxReset = new System.Windows.Forms.Button();
+            this.uxTrackedMapSize = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.uxTrackedItems = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.uxTrackedTiles = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.uxTrackedMapSize = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
+            this.uxReset = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.uxTrackSplashes = new System.Windows.Forms.CheckBox();
             this.uxTrackMovable = new System.Windows.Forms.CheckBox();
             this.uxTrackCurrentFloor = new System.Windows.Forms.CheckBox();
+            this.uxTrackSplashes = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -113,17 +113,23 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Statistics";
             // 
-            // uxReset
+            // uxTrackedMapSize
             // 
-            this.uxReset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.uxReset.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.uxReset.Location = new System.Drawing.Point(221, 90);
-            this.uxReset.Name = "uxReset";
-            this.uxReset.Size = new System.Drawing.Size(166, 32);
-            this.uxReset.TabIndex = 12;
-            this.uxReset.Text = "Reset";
-            this.uxReset.UseVisualStyleBackColor = true;
-            this.uxReset.Click += new System.EventHandler(this.uxReset_Click);
+            this.uxTrackedMapSize.Location = new System.Drawing.Point(107, 69);
+            this.uxTrackedMapSize.Name = "uxTrackedMapSize";
+            this.uxTrackedMapSize.ReadOnly = true;
+            this.uxTrackedMapSize.Size = new System.Drawing.Size(82, 20);
+            this.uxTrackedMapSize.TabIndex = 3;
+            this.uxTrackedMapSize.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(7, 72);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(94, 13);
+            this.label3.TabIndex = 2;
+            this.label3.Text = "Tracked map size:";
             // 
             // uxTrackedItems
             // 
@@ -161,23 +167,17 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "Tracked Tiles:";
             // 
-            // uxTrackedMapSize
+            // uxReset
             // 
-            this.uxTrackedMapSize.Location = new System.Drawing.Point(107, 69);
-            this.uxTrackedMapSize.Name = "uxTrackedMapSize";
-            this.uxTrackedMapSize.ReadOnly = true;
-            this.uxTrackedMapSize.Size = new System.Drawing.Size(82, 20);
-            this.uxTrackedMapSize.TabIndex = 3;
-            this.uxTrackedMapSize.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(7, 72);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(94, 13);
-            this.label3.TabIndex = 2;
-            this.label3.Text = "Tracked map size:";
+            this.uxReset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.uxReset.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.uxReset.Location = new System.Drawing.Point(221, 90);
+            this.uxReset.Name = "uxReset";
+            this.uxReset.Size = new System.Drawing.Size(166, 32);
+            this.uxReset.TabIndex = 12;
+            this.uxReset.Text = "Reset";
+            this.uxReset.UseVisualStyleBackColor = true;
+            this.uxReset.Click += new System.EventHandler(this.uxReset_Click);
             // 
             // groupBox3
             // 
@@ -190,16 +190,6 @@
             this.groupBox3.TabIndex = 15;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Options";
-            // 
-            // uxTrackSplashes
-            // 
-            this.uxTrackSplashes.AutoSize = true;
-            this.uxTrackSplashes.Location = new System.Drawing.Point(7, 40);
-            this.uxTrackSplashes.Name = "uxTrackSplashes";
-            this.uxTrackSplashes.Size = new System.Drawing.Size(98, 17);
-            this.uxTrackSplashes.TabIndex = 0;
-            this.uxTrackSplashes.Text = "Track splashes";
-            this.uxTrackSplashes.UseVisualStyleBackColor = true;
             // 
             // uxTrackMovable
             // 
@@ -221,6 +211,16 @@
             this.uxTrackCurrentFloor.Text = "Track current floor only";
             this.uxTrackCurrentFloor.UseVisualStyleBackColor = true;
             // 
+            // uxTrackSplashes
+            // 
+            this.uxTrackSplashes.AutoSize = true;
+            this.uxTrackSplashes.Location = new System.Drawing.Point(7, 40);
+            this.uxTrackSplashes.Name = "uxTrackSplashes";
+            this.uxTrackSplashes.Size = new System.Drawing.Size(98, 17);
+            this.uxTrackSplashes.TabIndex = 0;
+            this.uxTrackSplashes.Text = "Track splashes";
+            this.uxTrackSplashes.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -233,7 +233,7 @@
             this.Controls.Add(this.uxWrite);
             this.Controls.Add(this.uxStart);
             this.Name = "MainForm";
-            this.Text = "MapTracker.NET (under TibiaAPI)";
+            this.Text = "MapTracker.NET";
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();

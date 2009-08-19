@@ -11,26 +11,23 @@ using Tibia.Packets.Incoming;
 namespace MapTracker.NET
 {
     // Todo:
-    // Keep better track of player position
     // Many invalid items
     // Splashes are the wrong color
     // Options for ignoring Magic walls, fields, dead bodies
     public partial class MainForm : Form
     {
         #region Variables
-        bool useRawSocket = false;
+        ProxyBase proxy = null;
+        bool useHookProxy = false;
         Client client;
-        List<Client> clientList;
         Dictionary<ushort, ushort> clientToServer;
         Dictionary<Location, OtMapTile> mapTiles;
         Location mapBoundsNW;
         Location mapBoundsSE;
         Location currentLocation;
-        bool processing;
         bool tracking;
         int trackedTileCount;
         int trackedItemCount;
-        short staticSkipTiles;
         #endregion
 
         #region SplitPacket
@@ -66,17 +63,17 @@ namespace MapTracker.NET
 
             if (client != null)
             {
-                if (!useRawSocket && client.LoggedIn)
+                if (!useHookProxy && client.LoggedIn)
                 {
                     MessageBox.Show("Using the proxy requires that the client is not logged in.");
                     Application.Exit();
                 }
-                else if (!useRawSocket)
+                else if (!useHookProxy)
                 {
                     client.Exited += new EventHandler(Client_Exited);
-                    client.StartProxy();
-                    Start();
+                    client.IO.StartProxy();
                 }
+                Start();
             }
             else
             {
@@ -124,16 +121,15 @@ namespace MapTracker.NET
         #region Control
         private void Start()
         {
-
-            if (useRawSocket)
+            if (useHookProxy)
             {
-                client.StopRawSocket();
-                client.StartRawSocket();
-                AddHooks(client.RawSocket);
+                proxy = new HookProxy(client);
+                AddHooks();
             }
             else
             {
-                AddHooks(client.Proxy);
+                proxy = client.IO.Proxy;
+                AddHooks();
             }
 
             if (client.LoggedIn)
@@ -144,46 +140,37 @@ namespace MapTracker.NET
             uxLog.Clear();
             uxStart.Text = "Stop Map Tracking";
             tracking = true;
-            processing = false;
             uxReset.Enabled = false;
         }
 
-        private void RemoveHooks(SocketBase socketBase)
+        private void RemoveHooks()
         {
-            if (socketBase == null) return;
-            socketBase.ReceivedMapDescriptionIncomingPacket -= ReceivedMapPacket;
-            socketBase.ReceivedMoveNorthIncomingPacket -= ReceivedMapPacket;
-            socketBase.ReceivedMoveEastIncomingPacket -= ReceivedMapPacket;
-            socketBase.ReceivedMoveSouthIncomingPacket -= ReceivedMapPacket;
-            socketBase.ReceivedMoveWestIncomingPacket -= ReceivedMapPacket;
-            socketBase.ReceivedFloorChangeDownIncomingPacket -= ReceivedMapPacket;
-            socketBase.ReceivedFloorChangeUpIncomingPacket -= ReceivedMapPacket;
+            if (proxy == null) return;
+            proxy.ReceivedMapDescriptionIncomingPacket -= ReceivedMapPacket;
+            proxy.ReceivedMoveNorthIncomingPacket -= ReceivedMapPacket;
+            proxy.ReceivedMoveEastIncomingPacket -= ReceivedMapPacket;
+            proxy.ReceivedMoveSouthIncomingPacket -= ReceivedMapPacket;
+            proxy.ReceivedMoveWestIncomingPacket -= ReceivedMapPacket;
+            proxy.ReceivedFloorChangeDownIncomingPacket -= ReceivedMapPacket;
+            proxy.ReceivedFloorChangeUpIncomingPacket -= ReceivedMapPacket;
         }
 
-        private void AddHooks(SocketBase socketBase)
+        private void AddHooks()
         {
-            if (socketBase == null) return;
-            RemoveHooks(socketBase);
-            socketBase.ReceivedMapDescriptionIncomingPacket += ReceivedMapPacket;
-            socketBase.ReceivedMoveNorthIncomingPacket += ReceivedMapPacket;
-            socketBase.ReceivedMoveEastIncomingPacket += ReceivedMapPacket;
-            socketBase.ReceivedMoveSouthIncomingPacket += ReceivedMapPacket;
-            socketBase.ReceivedMoveWestIncomingPacket += ReceivedMapPacket;
-            socketBase.ReceivedFloorChangeDownIncomingPacket += ReceivedMapPacket;
-            socketBase.ReceivedFloorChangeUpIncomingPacket += ReceivedMapPacket;
+            if (proxy == null) return;
+            RemoveHooks();
+            proxy.ReceivedMapDescriptionIncomingPacket += ReceivedMapPacket;
+            proxy.ReceivedMoveNorthIncomingPacket += ReceivedMapPacket;
+            proxy.ReceivedMoveEastIncomingPacket += ReceivedMapPacket;
+            proxy.ReceivedMoveSouthIncomingPacket += ReceivedMapPacket;
+            proxy.ReceivedMoveWestIncomingPacket += ReceivedMapPacket;
+            proxy.ReceivedFloorChangeDownIncomingPacket += ReceivedMapPacket;
+            proxy.ReceivedFloorChangeUpIncomingPacket += ReceivedMapPacket;
         }
 
         private void Stop()
         {
-            if (useRawSocket)
-            {
-                client.StopRawSocket();
-                RemoveHooks(client.RawSocket);
-            }
-            else
-            {
-                RemoveHooks(client.Proxy);
-            }
+            RemoveHooks();
 
             uxStart.Text = "Start Map Tracking";
             tracking = false;
@@ -227,13 +214,13 @@ namespace MapTracker.NET
                     if (!mapTiles.ContainsKey(tile.Location))
                     {
                         if (uxTrackCurrentFloor.Checked && tile.Location.Z 
-                            != client.ReadInt32(Tibia.Addresses.Player.Z))
+                            != client.PlayerLocation.Z)
                             continue;
 
                         SetNewMapBounds(tile.Location);
                         OtMapTile mapTile = new OtMapTile();
                         mapTile.Location = tile.Location;
-                        mapTile.TileId = (ushort)tile.Id;
+                        mapTile.TileId = (ushort)tile.Ground.Id;
                         foreach (Item item in tile.Items)
                         {
                             if (!uxTrackMovable.Checked && !item.GetFlag(Tibia.Addresses.DatItem.Flag.IsImmovable))
