@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 
-namespace MapTracker.NET
+namespace MapTracker
 {
     static class Program
     {

@@ -8,8 +8,8 @@
     <ProjectGuid>{7272B921-F4EF-472F-860E-3FA9A489B988}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MapTracker.NET</RootNamespace>
-    <AssemblyName>MapTracker.NET</AssemblyName>
+    <RootNamespace>MapTracker</RootNamespace>
+    <AssemblyName>MapTracker</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ManifestCertificateThumbprint>C3F27AEF4C787C16BF7322F0415796DD094F5FC1</ManifestCertificateThumbprint>
@@ -88,6 +88,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="items.otb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -125,7 +126,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TibiaAPI\tibiaapi\TibiaAPI.csproj">
+    <ProjectReference Include="..\tibiaapi\tibiaapi\TibiaAPI.csproj">
       <Project>{4D132EB7-B97D-461D-85CF-949FF5A7BA96}</Project>
       <Name>TibiaAPI</Name>
     </ProjectReference>

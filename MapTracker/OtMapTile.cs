@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Tibia;
 using Tibia.Objects;
 
-namespace MapTracker.NET
+namespace MapTracker
 {
     public class OtMapTile
     {

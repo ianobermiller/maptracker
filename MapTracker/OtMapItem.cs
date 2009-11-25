@@ -1,4 +1,4 @@
-﻿namespace MapTracker.NET
+﻿namespace MapTracker
 {
     public class OtMapItem
     {

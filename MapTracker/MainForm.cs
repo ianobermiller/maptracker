@@ -8,7 +8,7 @@ using Tibia.Packets;
 using Tibia.Util;
 using Tibia.Packets.Incoming;
 
-namespace MapTracker.NET
+namespace MapTracker
 {
     // Todo:
     // Many invalid items
@@ -108,7 +108,8 @@ namespace MapTracker.NET
         {
             if (mapTiles.Count > 0)
             {
-                OtbmMapWriter.WriteMapTilesToFile(mapTiles.Values);
+                string file = OtbmMapWriter.WriteMapTilesToFile(mapTiles.Values);
+                Log("All map data written to " + file);
             }
         }
 

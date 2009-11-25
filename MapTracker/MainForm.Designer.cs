@@ -1,4 +1,4 @@
-﻿namespace MapTracker.NET
+﻿namespace MapTracker
 {
     partial class MainForm
     {
@@ -233,7 +233,7 @@
             this.Controls.Add(this.uxWrite);
             this.Controls.Add(this.uxStart);
             this.Name = "MainForm";
-            this.Text = "MapTracker.NET";
+            this.Text = "MapTracker";
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();

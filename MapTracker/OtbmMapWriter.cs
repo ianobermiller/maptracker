@@ -4,7 +4,7 @@ using System.Text;
 using System.IO;
 using Tibia.Objects;
 
-namespace MapTracker.NET
+namespace MapTracker
 {
     public class OtbmMapWriter : OtFileManager
     {
@@ -158,7 +158,7 @@ namespace MapTracker.NET
         #endregion
 
         #region Static Methods
-        public static void WriteMapTilesToFile(IEnumerable<OtMapTile> mapTiles)
+        public static string WriteMapTilesToFile(IEnumerable<OtMapTile> mapTiles)
         {
             string fn = Directory.GetCurrentDirectory() + "\\mapdump_" + DateTime.Now.ToString("dd-MM-yyyy_HH-mm-ss.ffff") + ".otbm";
             OtbmMapWriter mapWriter = new OtbmMapWriter(fn);
@@ -192,6 +192,7 @@ namespace MapTracker.NET
             mapWriter.WriteNodeEnd(); // Map Data node
             mapWriter.WriteNodeEnd(); // Root node
             mapWriter.Close();
+            return fn;
         }
         #endregion
     }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MapTracker.NET
+namespace MapTracker
 {
     public enum NodeType : byte
     {

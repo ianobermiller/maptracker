@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("MapTracker.NET")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("MapTracker")]
+[assembly: AssemblyDescription("Saves the map visible in the Tibia client to an OpenTibia compatible OTBM file.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("MapTracker.NET")]
-[assembly: AssemblyCopyright("Copyright ©  2008")]
+[assembly: AssemblyProduct("MapTracker")]
+[assembly: AssemblyCopyright("Copyright ©  2009")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
