@@ -48,4 +48,91 @@ namespace MapTracker
         SleepStart = 21,
         Charges = 22
     }
+
+    public enum ItemAttribute : byte
+    {
+        ServerId = 0x10,
+        ClientId,
+        Name,				/*deprecated*/
+        Description,			/*deprecated*/
+        Speed,
+        Slot,				/*deprecated*/
+        MaxItems,			/*deprecated*/
+        Weight,			/*deprecated*/
+        Weapon,			/*deprecated*/
+        Ammunition,				/*deprecated*/
+        Armor,			/*deprecated*/
+        MagicLevel,			/*deprecated*/
+        MagicFieldType,		/*deprecated*/
+        Writeable,		/*deprecated*/
+        RotateTo,			/*deprecated*/
+        Decay,			/*deprecated*/
+        SpriteHash,
+        MiniMapColor,
+        Attr07,
+        Attr08,
+        Light,
+
+        //1-byte aligned
+        Decay2,			/*deprecated*/
+        Weapon2,			/*deprecated*/
+        Ammunition2,				/*deprecated*/
+        Armor2,			/*deprecated*/
+        Writeable2,		/*deprecated*/
+        Light2,
+        TopOrder,
+        Writeable3		/*deprecated*/
+    }
+
+    public enum ItemGroup
+    {
+        None = 0,
+        Ground,
+        Container,
+        Weapon,
+        Ammunition,
+        Armor,
+        Charges,
+        Teleport,
+        MagicField,
+        Writeable,
+        Key,
+        Splash,
+        Fluid,
+        Door,
+        Deprecated,
+        Depot,
+        Mailbox,
+        TrashHolder,
+        Bed
+    }
+
+    [FlagsAttribute]
+    public enum ItemFlags : uint
+    {
+        BlocksSolid = 1,
+        BlocksProjectile = 2,
+        BlocksPathFinding = 4,
+        HasHeight = 8,
+        Useable = 16,
+        Pickupable = 32,
+        Moveable = 64,
+        Stackable = 128,
+        FloorChangeDown = 256,
+        FloorChangeNorth = 512,
+        FloorChangeEast = 1024,
+        FloorChangeSouth = 2048,
+        FloorChangeWest = 4096,
+        AlwaysOnTop = 8192,
+        Readable = 16384,
+        Rotatable = 32768,
+        Hangable = 65536,
+        Vertical = 131072,
+        Horizontal = 262144,
+        CannotDecay = 524288,
+        AllowDistanceRead = 1048576,
+        Unused = 2097152,
+        ClientCharges = 4194304,
+        LookThrough = 8388608
+    }
 }

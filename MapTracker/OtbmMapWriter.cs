@@ -6,7 +6,7 @@ using Tibia.Objects;
 
 namespace MapTracker
 {
-    public class OtbmMapWriter : OtFileManager
+    public class OtbmMapWriter
     {
         #region Vars/Properties
         private string fileName;
@@ -59,9 +59,9 @@ namespace MapTracker
             // Height
             WriteUInt16(0xFCFC);
             // Major version items
-            WriteUInt32(3);
+            WriteUInt32(0x00000003);
             // Minor version items
-            WriteUInt32(12);
+            WriteUInt32(0x0000000F);
         }
 
         public void WriteMapStart()
@@ -74,13 +74,13 @@ namespace MapTracker
 
         public void WriteNodeStart(NodeType type)
         {
-            WriteByte(NodeStart, false);
+            WriteByte(Constants.NodeStart, false);
             WriteByte((byte)type);
         }
 
         public void WriteNodeEnd()
         {
-            WriteByte(NodeEnd, false);
+            WriteByte(Constants.NodeEnd, false);
         }
 
         public void WriteDescription(string text)
@@ -93,9 +93,9 @@ namespace MapTracker
         {
             foreach(byte b in data)
             {
-                if (unescape && (b == NodeStart || b == NodeEnd || b == Escape))
+                if (unescape && (b == Constants.NodeStart || b == Constants.NodeEnd || b == Constants.Escape))
                 {
-                    fileStream.WriteByte(Escape);
+                    fileStream.WriteByte(Constants.Escape);
                 }
 
                 fileStream.WriteByte(b);
@@ -171,8 +171,11 @@ namespace MapTracker
                 mapWriter.WriteNodeStart(NodeType.Tile);
                 mapWriter.WriteTileCoords(tile.Location);
 
-                mapWriter.WriteAttrType(AttrType.Item);
-                mapWriter.WriteUInt16(tile.TileId);
+                if (tile.TileId > 0)
+                {
+                    mapWriter.WriteAttrType(AttrType.Item);
+                    mapWriter.WriteUInt16(tile.TileId);
+                }
 
                 foreach (OtMapItem item in tile.Items)
                 {

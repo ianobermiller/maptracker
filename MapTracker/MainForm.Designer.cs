@@ -45,6 +45,10 @@
             this.uxTrackMovable = new System.Windows.Forms.CheckBox();
             this.uxTrackCurrentFloor = new System.Windows.Forms.CheckBox();
             this.uxTrackSplashes = new System.Windows.Forms.CheckBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.uxMapBoundsNW = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.uxMapBoundsSE = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -54,7 +58,7 @@
             // 
             this.uxStart.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.uxStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.uxStart.Location = new System.Drawing.Point(222, 12);
+            this.uxStart.Location = new System.Drawing.Point(259, 12);
             this.uxStart.Name = "uxStart";
             this.uxStart.Size = new System.Drawing.Size(166, 44);
             this.uxStart.TabIndex = 11;
@@ -66,7 +70,7 @@
             // 
             this.uxWrite.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.uxWrite.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.uxWrite.Location = new System.Drawing.Point(221, 156);
+            this.uxWrite.Location = new System.Drawing.Point(258, 210);
             this.uxWrite.Name = "uxWrite";
             this.uxWrite.Size = new System.Drawing.Size(166, 44);
             this.uxWrite.TabIndex = 11;
@@ -80,9 +84,9 @@
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.uxLog);
-            this.groupBox1.Location = new System.Drawing.Point(12, 206);
+            this.groupBox1.Location = new System.Drawing.Point(12, 260);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(375, 172);
+            this.groupBox1.Size = new System.Drawing.Size(412, 187);
             this.groupBox1.TabIndex = 13;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Log";
@@ -94,21 +98,25 @@
             this.uxLog.Multiline = true;
             this.uxLog.Name = "uxLog";
             this.uxLog.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.uxLog.Size = new System.Drawing.Size(369, 153);
+            this.uxLog.Size = new System.Drawing.Size(406, 168);
             this.uxLog.TabIndex = 13;
             this.uxLog.Text = resources.GetString("uxLog.Text");
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.uxMapBoundsSE);
+            this.groupBox2.Controls.Add(this.label5);
             this.groupBox2.Controls.Add(this.uxTrackedMapSize);
+            this.groupBox2.Controls.Add(this.uxMapBoundsNW);
             this.groupBox2.Controls.Add(this.label3);
+            this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Controls.Add(this.uxTrackedItems);
             this.groupBox2.Controls.Add(this.label2);
             this.groupBox2.Controls.Add(this.uxTrackedTiles);
             this.groupBox2.Controls.Add(this.label1);
             this.groupBox2.Location = new System.Drawing.Point(12, 7);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(203, 100);
+            this.groupBox2.Size = new System.Drawing.Size(240, 155);
             this.groupBox2.TabIndex = 14;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Statistics";
@@ -118,7 +126,7 @@
             this.uxTrackedMapSize.Location = new System.Drawing.Point(107, 69);
             this.uxTrackedMapSize.Name = "uxTrackedMapSize";
             this.uxTrackedMapSize.ReadOnly = true;
-            this.uxTrackedMapSize.Size = new System.Drawing.Size(82, 20);
+            this.uxTrackedMapSize.Size = new System.Drawing.Size(127, 20);
             this.uxTrackedMapSize.TabIndex = 3;
             this.uxTrackedMapSize.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -136,7 +144,7 @@
             this.uxTrackedItems.Location = new System.Drawing.Point(107, 43);
             this.uxTrackedItems.Name = "uxTrackedItems";
             this.uxTrackedItems.ReadOnly = true;
-            this.uxTrackedItems.Size = new System.Drawing.Size(82, 20);
+            this.uxTrackedItems.Size = new System.Drawing.Size(127, 20);
             this.uxTrackedItems.TabIndex = 1;
             this.uxTrackedItems.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -154,7 +162,7 @@
             this.uxTrackedTiles.Location = new System.Drawing.Point(107, 17);
             this.uxTrackedTiles.Name = "uxTrackedTiles";
             this.uxTrackedTiles.ReadOnly = true;
-            this.uxTrackedTiles.Size = new System.Drawing.Size(82, 20);
+            this.uxTrackedTiles.Size = new System.Drawing.Size(127, 20);
             this.uxTrackedTiles.TabIndex = 1;
             this.uxTrackedTiles.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -171,9 +179,9 @@
             // 
             this.uxReset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.uxReset.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.uxReset.Location = new System.Drawing.Point(221, 90);
+            this.uxReset.Location = new System.Drawing.Point(258, 112);
             this.uxReset.Name = "uxReset";
-            this.uxReset.Size = new System.Drawing.Size(166, 32);
+            this.uxReset.Size = new System.Drawing.Size(166, 44);
             this.uxReset.TabIndex = 12;
             this.uxReset.Text = "Reset";
             this.uxReset.UseVisualStyleBackColor = true;
@@ -184,9 +192,9 @@
             this.groupBox3.Controls.Add(this.uxTrackMovable);
             this.groupBox3.Controls.Add(this.uxTrackCurrentFloor);
             this.groupBox3.Controls.Add(this.uxTrackSplashes);
-            this.groupBox3.Location = new System.Drawing.Point(15, 114);
+            this.groupBox3.Location = new System.Drawing.Point(15, 168);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(200, 86);
+            this.groupBox3.Size = new System.Drawing.Size(237, 86);
             this.groupBox3.TabIndex = 15;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Options";
@@ -221,11 +229,47 @@
             this.uxTrackSplashes.Text = "Track splashes";
             this.uxTrackSplashes.UseVisualStyleBackColor = true;
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(7, 98);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(91, 13);
+            this.label4.TabIndex = 0;
+            this.label4.Text = "Map bounds NW:";
+            // 
+            // uxMapBoundsNW
+            // 
+            this.uxMapBoundsNW.Location = new System.Drawing.Point(107, 95);
+            this.uxMapBoundsNW.Name = "uxMapBoundsNW";
+            this.uxMapBoundsNW.ReadOnly = true;
+            this.uxMapBoundsNW.Size = new System.Drawing.Size(127, 20);
+            this.uxMapBoundsNW.TabIndex = 1;
+            this.uxMapBoundsNW.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(7, 124);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(86, 13);
+            this.label5.TabIndex = 2;
+            this.label5.Text = "Map bounds SE:";
+            // 
+            // uxMapBoundsSE
+            // 
+            this.uxMapBoundsSE.Location = new System.Drawing.Point(107, 121);
+            this.uxMapBoundsSE.Name = "uxMapBoundsSE";
+            this.uxMapBoundsSE.ReadOnly = true;
+            this.uxMapBoundsSE.Size = new System.Drawing.Size(127, 20);
+            this.uxMapBoundsSE.TabIndex = 3;
+            this.uxMapBoundsSE.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(399, 390);
+            this.ClientSize = new System.Drawing.Size(436, 459);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.uxReset);
             this.Controls.Add(this.groupBox2);
@@ -263,6 +307,10 @@
         private System.Windows.Forms.CheckBox uxTrackMovable;
         private System.Windows.Forms.CheckBox uxTrackCurrentFloor;
         private System.Windows.Forms.CheckBox uxTrackSplashes;
+        private System.Windows.Forms.TextBox uxMapBoundsSE;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox uxMapBoundsNW;
+        private System.Windows.Forms.Label label4;
     }
 }
 

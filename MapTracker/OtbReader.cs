@@ -6,103 +6,100 @@ using System.IO;
 
 namespace MapTracker
 {
-    public class OtbReader : OtFileManager
+    public class OtbReader
     {
         private string fileName = "items.otb";
-        private Dictionary<ushort, ushort> clientToServerDict;
-        FileStream stream;
         byte[] buffer = new byte[128];
 
-        public OtbReader()
+        public IEnumerable<ItemInfo> GetAllItemInfo()
         {
-            clientToServerDict = new Dictionary<ushort, ushort>();
-        }
-        
-        public Dictionary<ushort, ushort> GetClientToServerDictionary()
-        {
-            stream = File.OpenRead(fileName);
+            FileLoader loader = new FileLoader();
+            loader.OpenFile(fileName);
+            Node node = loader.GetRootNode();
 
-            bool unparseNext = false;
-            int cur;
-            while ((cur = stream.ReadByte()) != -1)
+            PropertyReader props;
+
+            if (loader.GetProps(node, out props))
             {
-                switch (cur)
+                // 4 byte flags
+                // attributes
+                // 0x01 = version data
+                uint flags = props.ReadUInt32();
+                byte attr = props.ReadByte();
+                if (attr == 0x01)
                 {
-                    case NodeStart:
-                        if (unparseNext)
-                        {
-                            unparseNext = false;
-                        }
-                        else
-                        {
-                            int type = stream.ReadByte();
-                            if (type >=0 && type <= 13)
-                                HandleItem();
+                    ushort datalen = props.ReadUInt16();
+                    if (datalen != 140)
+                    {
+                        yield return null;
+                        yield break;
+                    }
+                    uint majorVersion = props.ReadUInt32();
+                    uint minorVersion = props.ReadUInt32();
+                    uint buildNumber = props.ReadUInt32();
+                }
+            }
+
+            node = node.Child;
+
+            while (node != null)
+            {
+                if (!loader.GetProps(node, out props))
+                {
+                    yield return null;
+                    yield break;
+                }
+
+                ItemInfo info = new ItemInfo();
+
+                info.Group = (ItemGroup)node.Type;
+
+                ItemFlags flags = (ItemFlags)props.ReadUInt32();
+                info.IsBlocking = flags.HasFlag(ItemFlags.BlocksSolid);
+                info.IsProjectileBlocking = flags.HasFlag(ItemFlags.BlocksProjectile);
+                info.IsPathBlocking = flags.HasFlag(ItemFlags.BlocksPathFinding);
+                info.HasHeight = flags.HasFlag(ItemFlags.HasHeight);
+                info.IsUseable = flags.HasFlag(ItemFlags.Useable);
+                info.IsPickupable = flags.HasFlag(ItemFlags.Pickupable);
+                info.IsMoveable = flags.HasFlag(ItemFlags.Moveable);
+                info.IsStackable = flags.HasFlag(ItemFlags.Stackable);
+                info.IsAlwaysOnTop = flags.HasFlag(ItemFlags.AlwaysOnTop);
+                info.IsVertical = flags.HasFlag(ItemFlags.Vertical);
+                info.IsHorizontal = flags.HasFlag(ItemFlags.Horizontal);
+                info.IsHangable = flags.HasFlag(ItemFlags.Hangable);
+                info.IsDistanceReadable = flags.HasFlag(ItemFlags.AllowDistanceRead);
+                info.IsRotatable = flags.HasFlag(ItemFlags.Rotatable);
+                info.IsReadable = flags.HasFlag(ItemFlags.Readable);
+                info.HasClientCharges = flags.HasFlag(ItemFlags.ClientCharges);
+                info.CanLookThrough = flags.HasFlag(ItemFlags.LookThrough);
+
+                // process flags
+
+                byte attr;
+                ushort datalen;
+                while (props.PeekChar() != -1)
+                {
+                    attr = props.ReadByte();
+                    datalen = props.ReadUInt16();
+                    switch ((ItemAttribute)attr)
+                    {
+                        case ItemAttribute.ServerId:
+                            info.Id = props.ReadUInt16();
                             break;
-                        }
-                        break;
-                    case NodeEnd:
-                        if (unparseNext)
-                        {
-                            unparseNext = false;
-                        }
-                        else
-                        {
-
-                        }
-                        break;
-                    case Escape:
-                        unparseNext = true;
-                        break;
+                        case ItemAttribute.ClientId:
+                            info.SpriteId = props.ReadUInt16();
+                            break;
+                        case ItemAttribute.TopOrder:
+                            info.TopOrder = props.ReadByte();
+                            break;
+                        default:
+                            props.ReadBytes(datalen);
+                            break;
+                    }
                 }
+                yield return info;
+                node = node.Next;
             }
-
-            return clientToServerDict;
-        }
-
-        private void HandleItem()
-        {
-            ushort serverId = 0;
-            ushort clientId = 0;
-            // skip 4 flag bytes
-            ReadAndUnescape(4);
-
-            byte attr = ReadAndUnescape(1)[0];
-            ushort len = BitConverter.ToUInt16(ReadAndUnescape(2), 0);
-
-            if (attr == 0x10)
-            {
-                serverId = BitConverter.ToUInt16(ReadAndUnescape(2), 0);
-            }
-            attr = ReadAndUnescape(1)[0];
-            if (attr == 0x11)
-            {
-                len = BitConverter.ToUInt16(ReadAndUnescape(2), 0);
-                clientId = BitConverter.ToUInt16(ReadAndUnescape(2), 0);
-            }
-
-            if (clientId > 0 && !clientToServerDict.ContainsKey(clientId))
-                clientToServerDict.Add(clientId, serverId);
-        }
-
-        private byte[] ReadAndUnescape(int count)
-        {
-            byte[] buffer = new byte[count];
-            for (int i = 0; i < count; i++)
-            {
-                // read the server and client ids
-                byte tmp = (byte)stream.ReadByte();
-
-                if (tmp == Escape)
-                {
-                    buffer[i] = (byte)stream.ReadByte();
-                }
-                else
-                {
-                    buffer[i] = tmp;
-                }
-            }
-            return buffer;
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace MapTracker
 {
-    public class OtFileManager
+    public class Constants
     {
         #region Constants
         public const byte NodeStart = 0xFE;

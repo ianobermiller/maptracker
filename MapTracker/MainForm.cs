@@ -7,6 +7,7 @@ using Tibia.Objects;
 using Tibia.Packets;
 using Tibia.Util;
 using Tibia.Packets.Incoming;
+using Tibia.Constants;
 
 namespace MapTracker
 {
@@ -20,7 +21,6 @@ namespace MapTracker
         ProxyBase proxy = null;
         bool useHookProxy = false;
         Client client;
-        Dictionary<ushort, ushort> clientToServer;
         Dictionary<Location, OtMapTile> mapTiles;
         Location mapBoundsNW;
         Location mapBoundsSE;
@@ -53,7 +53,7 @@ namespace MapTracker
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            clientToServer = new OtbReader().GetClientToServerDictionary();
+            ItemInfo.LoadItemsOtb();
             mapTiles = new Dictionary<Location, OtMapTile>();
             packetQueue = new Queue<SplitPacket>();
 
@@ -195,6 +195,8 @@ namespace MapTracker
                 uxTrackedTiles.Text = trackedTileCount.ToString("0,0");
                 uxTrackedItems.Text = trackedItemCount.ToString("0,0");
                 uxTrackedMapSize.Text = GetMapSize().ToString();
+                uxMapBoundsNW.Text = mapBoundsNW.ToString();
+                uxMapBoundsSE.Text = mapBoundsSE.ToString();
             }));
         }
 
@@ -221,25 +223,34 @@ namespace MapTracker
                         SetNewMapBounds(tile.Location);
                         OtMapTile mapTile = new OtMapTile();
                         mapTile.Location = tile.Location;
-                        mapTile.TileId = (ushort)tile.Ground.Id;
+
+                        tile.Items.Add(tile.Ground);
+
                         foreach (Item item in tile.Items)
                         {
-                            if (!uxTrackMovable.Checked && !item.GetFlag(Tibia.Addresses.DatItem.Flag.IsImmovable))
-                                continue;
-                            if (!uxTrackSplashes.Checked && item.GetFlag(Tibia.Addresses.DatItem.Flag.IsSplash))
-                                continue;
-                            OtMapItem mapItem = new OtMapItem();
-                            mapItem.AttrType = AttrType.None;
+                            ItemInfo info = ItemInfo.GetItemInfo((ushort)item.Id);
 
-                            if (clientToServer.ContainsKey((ushort)item.Id))
-                            {
-                                mapItem.ItemId = clientToServer[(ushort)item.Id];
-                            }
-                            else
+                            if (info == null)
                             {
                                 Log("ClientId not in items.otb: " + item.Id.ToString());
                                 break;
                             }
+
+                            if (!uxTrackMovable.Checked && !item.GetFlag(Tibia.Addresses.DatItem.Flag.IsImmovable))
+                                continue;
+                            if (!uxTrackSplashes.Checked && item.GetFlag(Tibia.Addresses.DatItem.Flag.IsSplash))
+                                continue;
+
+                            if (info.Group == ItemGroup.Ground)
+                            {
+                                mapTile.TileId = info.Id;
+                                break;
+                            }
+
+                            OtMapItem mapItem = new OtMapItem();
+                            mapItem.AttrType = AttrType.None;
+
+                            mapItem.ItemId = info.Id;
 
                             if (item.HasExtraByte)
                             {
