@@ -63,6 +63,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CamLoader.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CamLoader.Designer.cs">
+      <DependentUpon>CamLoader.cs</DependentUpon>
+    </Compile>
     <Compile Include="Enums.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="FileLoader.cs" />
@@ -80,6 +86,9 @@
     <Compile Include="OtbmMapWriter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="CamLoader.resx">
+      <DependentUpon>CamLoader.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -131,9 +140,13 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\tibiaapi\tibiaapi\TibiaAPI.csproj">
+    <ProjectReference Include="..\TibiaAPI\tibiaapi\TibiaAPI.csproj">
       <Project>{4D132EB7-B97D-461D-85CF-949FF5A7BA96}</Project>
       <Name>TibiaAPI</Name>
+    </ProjectReference>
+    <ProjectReference Include="SevenZip\Compress\LzmaAlone\Lzma.csproj">
+      <Project>{CE33DF18-F9C8-4D6F-9057-DBB4DB96E973}</Project>
+      <Name>Lzma</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

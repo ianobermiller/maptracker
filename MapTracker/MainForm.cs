@@ -8,6 +8,7 @@ using Tibia.Packets;
 using Tibia.Util;
 using Tibia.Packets.Incoming;
 using Tibia.Constants;
+using System.IO;
 
 namespace MapTracker
 {
@@ -28,6 +29,7 @@ namespace MapTracker
         bool tracking;
         int trackedTileCount;
         int trackedItemCount;
+        CamLoader camLoader = null;
         #endregion
 
         #region SplitPacket
@@ -81,6 +83,8 @@ namespace MapTracker
                 MessageBox.Show("MapTracker requires at least one running client.");
                 Application.Exit();
             }
+
+            camLoader = new CamLoader(client, proxy, Log);
         }
 
         void Client_Exited(object sender, EventArgs e)
@@ -117,6 +121,12 @@ namespace MapTracker
         private void uxReset_Click(object sender, EventArgs e)
         {
             Reset();
+        }
+
+        private void uxTrackFromCam_Click(object sender, EventArgs e)
+        {
+            if (camLoader != null)
+                camLoader.ShowDialog(this);
         }
         #endregion
 

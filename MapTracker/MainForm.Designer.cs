@@ -34,8 +34,12 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.uxLog = new System.Windows.Forms.TextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.uxMapBoundsSE = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
             this.uxTrackedMapSize = new System.Windows.Forms.TextBox();
+            this.uxMapBoundsNW = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
             this.uxTrackedItems = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.uxTrackedTiles = new System.Windows.Forms.TextBox();
@@ -45,10 +49,7 @@
             this.uxTrackMovable = new System.Windows.Forms.CheckBox();
             this.uxTrackCurrentFloor = new System.Windows.Forms.CheckBox();
             this.uxTrackSplashes = new System.Windows.Forms.CheckBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.uxMapBoundsNW = new System.Windows.Forms.TextBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.uxMapBoundsSE = new System.Windows.Forms.TextBox();
+            this.uxTrackFromCam = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -121,6 +122,24 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Statistics";
             // 
+            // uxMapBoundsSE
+            // 
+            this.uxMapBoundsSE.Location = new System.Drawing.Point(107, 121);
+            this.uxMapBoundsSE.Name = "uxMapBoundsSE";
+            this.uxMapBoundsSE.ReadOnly = true;
+            this.uxMapBoundsSE.Size = new System.Drawing.Size(127, 20);
+            this.uxMapBoundsSE.TabIndex = 3;
+            this.uxMapBoundsSE.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(7, 124);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(86, 13);
+            this.label5.TabIndex = 2;
+            this.label5.Text = "Map bounds SE:";
+            // 
             // uxTrackedMapSize
             // 
             this.uxTrackedMapSize.Location = new System.Drawing.Point(107, 69);
@@ -130,6 +149,15 @@
             this.uxTrackedMapSize.TabIndex = 3;
             this.uxTrackedMapSize.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
+            // uxMapBoundsNW
+            // 
+            this.uxMapBoundsNW.Location = new System.Drawing.Point(107, 95);
+            this.uxMapBoundsNW.Name = "uxMapBoundsNW";
+            this.uxMapBoundsNW.ReadOnly = true;
+            this.uxMapBoundsNW.Size = new System.Drawing.Size(127, 20);
+            this.uxMapBoundsNW.TabIndex = 1;
+            this.uxMapBoundsNW.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // label3
             // 
             this.label3.AutoSize = true;
@@ -138,6 +166,15 @@
             this.label3.Size = new System.Drawing.Size(94, 13);
             this.label3.TabIndex = 2;
             this.label3.Text = "Tracked map size:";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(7, 98);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(91, 13);
+            this.label4.TabIndex = 0;
+            this.label4.Text = "Map bounds NW:";
             // 
             // uxTrackedItems
             // 
@@ -179,7 +216,7 @@
             // 
             this.uxReset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.uxReset.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.uxReset.Location = new System.Drawing.Point(258, 112);
+            this.uxReset.Location = new System.Drawing.Point(259, 78);
             this.uxReset.Name = "uxReset";
             this.uxReset.Size = new System.Drawing.Size(166, 44);
             this.uxReset.TabIndex = 12;
@@ -229,41 +266,17 @@
             this.uxTrackSplashes.Text = "Track splashes";
             this.uxTrackSplashes.UseVisualStyleBackColor = true;
             // 
-            // label4
+            // uxTrackFromCam
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(7, 98);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(91, 13);
-            this.label4.TabIndex = 0;
-            this.label4.Text = "Map bounds NW:";
-            // 
-            // uxMapBoundsNW
-            // 
-            this.uxMapBoundsNW.Location = new System.Drawing.Point(107, 95);
-            this.uxMapBoundsNW.Name = "uxMapBoundsNW";
-            this.uxMapBoundsNW.ReadOnly = true;
-            this.uxMapBoundsNW.Size = new System.Drawing.Size(127, 20);
-            this.uxMapBoundsNW.TabIndex = 1;
-            this.uxMapBoundsNW.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(7, 124);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(86, 13);
-            this.label5.TabIndex = 2;
-            this.label5.Text = "Map bounds SE:";
-            // 
-            // uxMapBoundsSE
-            // 
-            this.uxMapBoundsSE.Location = new System.Drawing.Point(107, 121);
-            this.uxMapBoundsSE.Name = "uxMapBoundsSE";
-            this.uxMapBoundsSE.ReadOnly = true;
-            this.uxMapBoundsSE.Size = new System.Drawing.Size(127, 20);
-            this.uxMapBoundsSE.TabIndex = 3;
-            this.uxMapBoundsSE.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.uxTrackFromCam.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.uxTrackFromCam.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.uxTrackFromCam.Location = new System.Drawing.Point(259, 144);
+            this.uxTrackFromCam.Name = "uxTrackFromCam";
+            this.uxTrackFromCam.Size = new System.Drawing.Size(166, 44);
+            this.uxTrackFromCam.TabIndex = 12;
+            this.uxTrackFromCam.Text = "Track from CAM...";
+            this.uxTrackFromCam.UseVisualStyleBackColor = true;
+            this.uxTrackFromCam.Click += new System.EventHandler(this.uxTrackFromCam_Click);
             // 
             // MainForm
             // 
@@ -271,6 +284,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(436, 459);
             this.Controls.Add(this.groupBox3);
+            this.Controls.Add(this.uxTrackFromCam);
             this.Controls.Add(this.uxReset);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -311,6 +325,7 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox uxMapBoundsNW;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Button uxTrackFromCam;
     }
 }
 
