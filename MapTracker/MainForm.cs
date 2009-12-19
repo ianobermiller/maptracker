@@ -46,8 +46,9 @@ namespace MapTracker
         #endregion
 
         #region Form Controls
-        public MainForm()
+        public MainForm(bool useHookProxy)
         {
+            this.useHookProxy = useHookProxy;
             InitializeComponent();
         }
 
