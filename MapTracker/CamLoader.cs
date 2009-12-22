@@ -45,12 +45,12 @@ namespace MapTracker
             }
 
             this.Text = "Tracking CAM file...";
-            Action<string> parseAction = ParseAllPackets;
-            parseAction.BeginInvoke(dialog.FileName, null, null);
+            ParseAllPackets(dialog.FileName);
         }
 
         private void ParseAllPackets(string fileName)
         {
+            this.ControlBox = false;
             start = DateTime.Now.Ticks;
             try
             {
@@ -113,19 +113,19 @@ namespace MapTracker
                         proxy.ParseServerPacket(client, packet);
                         this.Invoke(new EventHandler(delegate { this.DoneParsing(); }));
                     }));
-
-                    this.Invoke(new EventHandler(delegate { this.Owner.Update(); }));
                 }
             }
             catch (Exception ex)
             {
                 logMethod("Exception while loading CAM file:\n" + ex);
-                this.Invoke(new EventHandler(delegate { this.Text = "Done, with errors"; }));
+                this.Text = "Done, with errors";
+                this.ControlBox = true;
             }
         }
 
         void DoneParsing()
         {
+            this.Owner.Update();
             this.parsedCount++;
             this.uxProgess.Value = (int)(((double)this.parsedCount / this.totalPacketCount) * 100);
 
@@ -134,8 +134,8 @@ namespace MapTracker
                 TimeSpan elapsed = new TimeSpan(DateTime.Now.Ticks - start);
                 logMethod(String.Format("Tracked map from CAM in {0} min {1} sec.",
                     (int)elapsed.TotalMinutes, elapsed.Seconds));
-                this.Invoke(new EventHandler(delegate { this.Text = "Done"; }));
-                this.Invoke(new EventHandler(delegate { this.Close(); }));
+                this.Text = "Done";
+                this.Close();
             }
         }
     }
