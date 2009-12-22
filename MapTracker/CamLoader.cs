@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using Tibia.Packets;
 using System.IO;
 using Tibia.Objects;
+using System.Threading;
 
 namespace MapTracker
 {
@@ -17,6 +18,9 @@ namespace MapTracker
         Action<string> logMethod;
         Client client;
         ProxyBase proxy;
+        long start;
+        int totalPacketCount;
+        int parsedCount;
 
         public CamLoader(Client client, ProxyBase proxy, Action<string> logMethod)
         {
@@ -35,18 +39,22 @@ namespace MapTracker
             dialog.Title = "Select a CAM recording";
 
             if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+            {
+                this.Close();
                 return;
+            }
 
             this.Text = "Tracking CAM file...";
-
-            ParseAllPackets(dialog.FileName);
+            Action<string> parseAction = ParseAllPackets;
+            parseAction.BeginInvoke(dialog.FileName, null, null);
         }
 
         private void ParseAllPackets(string fileName)
         {
+            start = DateTime.Now.Ticks;
             try
             {
-                //CAM FILE -
+                //CAM FILE
                 int version = 0;
                 BinaryReader reader = new BinaryReader(new FileStream(fileName, FileMode.Open, FileAccess.Read));
 
@@ -82,37 +90,52 @@ namespace MapTracker
                 //- 4 bytes - (numOfPackets + 57)
                 int packetCount = reader.ReadInt32() - 57;
 
+                this.totalPacketCount = packetCount;
+                this.parsedCount = 0;
+
                 //- x bytes of packets - one after one
                 for (int i = 0; i < packetCount; i++)
-                {
-                    uxProgess.Value = (int)(((double)i / packetCount) * 100);
+                {                    
                     //Packet structure:
                     //- 2 bytes - (logicalPacketLen + 2)
                     reader.ReadInt16();
                     //- 4 bytes - timeStamp
                     int timestamp = reader.ReadInt32();
-                    //Console.WriteLine("Timestamp: " + timestamp);
                     //- 2 bytes - logicalPacketLen
                     int packetlength = reader.ReadInt16();
-                    //Console.WriteLine("Length:    " + packetlength);
                     //- x bytes - logical packet without headers (0a xx xx xx)
                     byte[] packet = reader.ReadBytes(packetlength);
-                    //Console.WriteLine("Type:      {0:X2}", packet[0]);
                     //- 4 bytes - footer (can be anything)
                     reader.ReadUInt32();
 
-                    proxy.ParseServerPacket(client, packet);
-                    //Console.WriteLine();
-                    Owner.Update();
-                }
+                    ThreadPool.QueueUserWorkItem(new WaitCallback(delegate
+                    {
+                        proxy.ParseServerPacket(client, packet);
+                        this.Invoke(new EventHandler(delegate { this.DoneParsing(); }));
+                    }));
 
-                this.Text = "Done";
-                this.Close();
+                    this.Invoke(new EventHandler(delegate { this.Owner.Update(); }));
+                }
             }
             catch (Exception ex)
             {
                 logMethod("Exception while loading CAM file:\n" + ex);
-                this.Text = "Done, with errors";
+                this.Invoke(new EventHandler(delegate { this.Text = "Done, with errors"; }));
+            }
+        }
+
+        void DoneParsing()
+        {
+            this.parsedCount++;
+            this.uxProgess.Value = (int)(((double)this.parsedCount / this.totalPacketCount) * 100);
+
+            if (this.parsedCount == this.totalPacketCount)
+            {
+                TimeSpan elapsed = new TimeSpan(DateTime.Now.Ticks - start);
+                logMethod(String.Format("Tracked map from CAM in {0} min {1} sec.",
+                    (int)elapsed.TotalMinutes, elapsed.Seconds));
+                this.Invoke(new EventHandler(delegate { this.Text = "Done"; }));
+                this.Invoke(new EventHandler(delegate { this.Close(); }));
             }
         }
     }

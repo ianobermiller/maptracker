@@ -126,7 +126,9 @@ namespace MapTracker
         private void uxTrackFromCam_Click(object sender, EventArgs e)
         {
             if (camLoader != null)
+            {
                 camLoader.ShowDialog(this);
+            }
         }
         #endregion
 
