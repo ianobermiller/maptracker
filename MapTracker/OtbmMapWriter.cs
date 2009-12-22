@@ -61,7 +61,7 @@ namespace MapTracker
             // Major version items
             WriteUInt32(0x00000003);
             // Minor version items
-            WriteUInt32(0x0000000F);
+            WriteUInt32(0x00000010);
         }
 
         public void WriteMapStart()
