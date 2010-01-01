@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace MapTracker
 {
     public class Constants
     {
-        #region Constants
         public const byte NodeStart = 0xFE;
         public const byte NodeEnd = 0xFF;
         public const byte Escape = 0xFD;
-        #endregion
+
+        public static Dictionary<uint, Version> TibiaVersionToMapVersion = new Dictionary<uint,Version>
+        {
+            { 810, new Version(2, 8) },
+            { 853, new Version(3, 16) }
+        };
     }
 }

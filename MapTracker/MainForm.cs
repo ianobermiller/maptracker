@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
+using Tibia.Constants;
 using Tibia.Objects;
 using Tibia.Packets;
-using Tibia.Util;
 using Tibia.Packets.Incoming;
-using Tibia.Constants;
-using System.IO;
+using Tibia.Util;
 
 namespace MapTracker
 {
@@ -113,7 +110,10 @@ namespace MapTracker
         {
             if (mapTiles.Count > 0)
             {
-                string file = OtbmMapWriter.WriteMapTilesToFile(mapTiles.Values);
+                string file = OtbmMapWriter.WriteMapTilesToFile(
+                    mapTiles.Values,
+                    Constants.TibiaVersionToMapVersion[client.VersionNumber]
+                );
                 Log("All map data written to " + file);
             }
         }
@@ -142,6 +142,8 @@ namespace MapTracker
             }
             else
             {
+                client.IO.Proxy.AllowIncomingModification = false;
+                client.IO.Proxy.AllowOutgoingModification = false;
                 proxy = client.IO.Proxy;
                 AddHooks();
             }
@@ -227,66 +229,73 @@ namespace MapTracker
                 MapPacket p = (MapPacket)packet;
                 foreach (Tile tile in p.Tiles)
                 {
-                    if (!mapTiles.ContainsKey(tile.Location))
+                    if (uxTrackCurrentFloor.Checked && tile.Location.Z 
+                        != client.PlayerLocation.Z)
+                        continue;
+
+                    SetNewMapBounds(tile.Location);
+                    OtMapTile mapTile = new OtMapTile();
+                    mapTile.Location = tile.Location;
+
+                    tile.Items.Reverse();
+
+                    tile.Items.Insert(0, tile.Ground);
+
+                    foreach (Item item in tile.Items)
                     {
-                        if (uxTrackCurrentFloor.Checked && tile.Location.Z 
-                            != client.PlayerLocation.Z)
+                        if (item == null)
                             continue;
 
-                        SetNewMapBounds(tile.Location);
-                        OtMapTile mapTile = new OtMapTile();
-                        mapTile.Location = tile.Location;
+                        ItemInfo info = ItemInfo.GetItemInfo((ushort)item.Id);
 
-                        tile.Items.Add(tile.Ground);
-
-                        foreach (Item item in tile.Items)
+                        if (info == null)
                         {
-                            ItemInfo info = ItemInfo.GetItemInfo((ushort)item.Id);
-
-                            if (info == null)
-                            {
-                                Log("ClientId not in items.otb: " + item.Id.ToString());
-                                break;
-                            }
-
-                            if (!uxTrackMovable.Checked && !item.GetFlag(Tibia.Addresses.DatItem.Flag.IsImmovable))
-                                continue;
-                            if (!uxTrackSplashes.Checked && item.GetFlag(Tibia.Addresses.DatItem.Flag.IsSplash))
-                                continue;
-
-                            if (info.Group == ItemGroup.Ground)
-                            {
-                                mapTile.TileId = info.Id;
-                                break;
-                            }
-
-                            OtMapItem mapItem = new OtMapItem();
-                            mapItem.AttrType = AttrType.None;
-
-                            mapItem.ItemId = info.Id;
-
-                            if (item.HasExtraByte)
-                            {
-                                byte extra = item.Count;
-                                if (item.GetFlag(Tibia.Addresses.DatItem.Flag.IsRune))
-                                {
-                                    mapItem.AttrType = AttrType.Charges;
-                                    mapItem.Extra = extra;
-                                }
-                                else if (item.GetFlag(Tibia.Addresses.DatItem.Flag.IsStackable) ||
-                                    item.GetFlag(Tibia.Addresses.DatItem.Flag.IsSplash))
-                                {
-                                    mapItem.AttrType = AttrType.Count;
-                                    mapItem.Extra = extra;
-                                }
-                            }
-                            mapTile.Items.Add(mapItem);
+                            Log("ClientId not in items.otb: " + item.Id.ToString());
+                            continue;
                         }
-                        mapTiles.Add(tile.Location, mapTile);
+
+                        if (!uxTrackMovable.Checked && !item.GetFlag(Tibia.Addresses.DatItem.Flag.IsImmovable) && info.IsMoveable)
+                            continue;
+                        if (!uxTrackSplashes.Checked && item.GetFlag(Tibia.Addresses.DatItem.Flag.IsSplash))
+                            continue;
+
+                        if (info.Group == ItemGroup.Ground)
+                        {
+                            mapTile.TileId = info.Id;
+                            continue;
+                        }
+
+                        OtMapItem mapItem = new OtMapItem();
+                        mapItem.AttrType = AttrType.None;
+
+                        mapItem.ItemId = info.Id;
+
+                        if (item.HasExtraByte)
+                        {
+                            byte extra = item.Count;
+                            if (item.GetFlag(Tibia.Addresses.DatItem.Flag.IsRune))
+                            {
+                                mapItem.AttrType = AttrType.Charges;
+                                mapItem.Extra = extra;
+                            }
+                            else if (item.GetFlag(Tibia.Addresses.DatItem.Flag.IsStackable) ||
+                                item.GetFlag(Tibia.Addresses.DatItem.Flag.IsSplash))
+                            {
+                                mapItem.AttrType = AttrType.Count;
+                                mapItem.Extra = extra;
+                            }
+                        }
+                        mapTile.Items.Add(mapItem);
+                    }
+
+                    if (!mapTiles.ContainsKey(tile.Location))
+                    {
                         trackedTileCount++;
                         trackedItemCount += mapTile.Items.Count;
                         UpdateStats();
                     }
+
+                    mapTiles[tile.Location] = mapTile;
                 }
             }
             return true;

@@ -8,7 +8,7 @@ namespace MapTracker
         public ushort SpriteId = 100;
         public ItemGroup Group = ItemGroup.None;
         public bool IsAlwaysOnTop = false;
-        public byte TopOrder = 0;
+        public byte TopOrder = 5;
         public bool IsBlocking = false;
         public bool IsProjectileBlocking = false;
         public bool IsPathBlocking = false;
@@ -26,7 +26,6 @@ namespace MapTracker
         public bool IsWriteable = false;
         public bool HasClientCharges = false;
         public bool CanLookThrough = false;
-        public bool HasExtraByte = false;
 
         private static Dictionary<ushort, ItemInfo> itemInfoDictionary = new Dictionary<ushort, ItemInfo>();
 

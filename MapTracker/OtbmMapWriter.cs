@@ -43,7 +43,7 @@ namespace MapTracker
         #endregion
 
         #region Write
-        public void WriteHeader()
+        public void WriteHeader(Version version)
         {
             // Version, unescaped
             WriteUInt32(0, false);
@@ -58,10 +58,11 @@ namespace MapTracker
             WriteUInt16(0xFCFC);
             // Height
             WriteUInt16(0xFCFC);
+
             // Major version items
-            WriteUInt32(0x00000003);
+            WriteUInt32((uint)version.Major);
             // Minor version items
-            WriteUInt32(0x00000010);
+            WriteUInt32((uint)version.Minor);
         }
 
         public void WriteMapStart()
@@ -158,11 +159,11 @@ namespace MapTracker
         #endregion
 
         #region Static Methods
-        public static string WriteMapTilesToFile(IEnumerable<OtMapTile> mapTiles)
+        public static string WriteMapTilesToFile(IEnumerable<OtMapTile> mapTiles, Version version)
         {
             string fn = Directory.GetCurrentDirectory() + "\\mapdump_" + DateTime.Now.ToString("dd-MM-yyyy_HH-mm-ss.ffff") + ".otbm";
             OtbmMapWriter mapWriter = new OtbmMapWriter(fn);
-            mapWriter.WriteHeader();
+            mapWriter.WriteHeader(version);
             mapWriter.WriteMapStart();
             foreach (OtMapTile tile in mapTiles)
             {
