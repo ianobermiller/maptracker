@@ -20,6 +20,7 @@ namespace MapTracker
         bool useHookProxy = false;
         Client client;
         Dictionary<Location, OtMapTile> mapTiles;
+        Dictionary<Location, PacketCreature> mapCreatures;
         Location mapBoundsNW;
         Location mapBoundsSE;
         Location currentLocation;
@@ -45,9 +46,9 @@ namespace MapTracker
         #endregion
 
         #region Form Controls
-        public MainForm(bool useHookProxy)
+        public MainForm()
         {
-            this.useHookProxy = useHookProxy;
+            this.useHookProxy = MapTracker.Properties.Settings.Default.EnableHookProxy;
             InitializeComponent();
         }
 
@@ -55,6 +56,7 @@ namespace MapTracker
         {
             ItemInfo.LoadItemsOtb();
             mapTiles = new Dictionary<Location, OtMapTile>();
+            mapCreatures = new Dictionary<Location, PacketCreature>();
             packetQueue = new Queue<SplitPacket>();
 
             Reset();
@@ -108,11 +110,18 @@ namespace MapTracker
 
         private void uxWrite_Click(object sender, EventArgs e)
         {
+            IEnumerable<PacketCreature> creatures;
+            if (uxTrackSpawns.Checked)
+                creatures = mapCreatures.Values;
+            else
+                creatures = new List<PacketCreature>();
+
             if (mapTiles.Count > 0)
             {
                 string file = OtbmMapWriter.WriteMapTilesToFile(
                     mapTiles.Values,
-                    Constants.TibiaVersionToMapVersion[client.VersionNumber]
+                    creatures,
+                    Constants.GetMapVersion(client.VersionNumber)
                 );
                 Log("All map data written to " + file);
             }
@@ -209,6 +218,7 @@ namespace MapTracker
             {
                 uxTrackedTiles.Text = trackedTileCount.ToString("0,0");
                 uxTrackedItems.Text = trackedItemCount.ToString("0,0");
+                uxTrackedCreatures.Text = mapCreatures.Count.ToString("0,0");
                 uxTrackedMapSize.Text = GetMapSize().ToString();
                 uxMapBoundsNW.Text = mapBoundsNW.ToString();
                 uxMapBoundsSE.Text = mapBoundsSE.ToString();
@@ -224,12 +234,15 @@ namespace MapTracker
         #region Process Packets
         private bool ReceivedMapPacket(IncomingPacket packet)
         {
+            bool trackMovable = uxTrackMovable.Checked;
+            bool trackSplashes = uxTrackSplashes.Checked;
+            bool trackCurrentFloor = uxTrackCurrentFloor.Checked;
             lock (this)
             {
                 MapPacket p = (MapPacket)packet;
                 foreach (Tile tile in p.Tiles)
                 {
-                    if (uxTrackCurrentFloor.Checked && tile.Location.Z 
+                    if (trackCurrentFloor && tile.Location.Z 
                         != client.PlayerLocation.Z)
                         continue;
 
@@ -254,9 +267,9 @@ namespace MapTracker
                             continue;
                         }
 
-                        if (!uxTrackMovable.Checked && !item.GetFlag(Tibia.Addresses.DatItem.Flag.IsImmovable) && info.IsMoveable)
+                        if (!trackMovable && !item.GetFlag(Tibia.Addresses.DatItem.Flag.IsImmovable) && info.IsMoveable)
                             continue;
-                        if (!uxTrackSplashes.Checked && item.GetFlag(Tibia.Addresses.DatItem.Flag.IsSplash))
+                        if (!trackSplashes && item.GetFlag(Tibia.Addresses.DatItem.Flag.IsSplash))
                             continue;
 
                         if (info.Group == ItemGroup.Ground)
@@ -288,15 +301,30 @@ namespace MapTracker
                         mapTile.Items.Add(mapItem);
                     }
 
-                    if (!mapTiles.ContainsKey(tile.Location))
+                    OtMapTile existing = null;
+                    if (mapTiles.TryGetValue(tile.Location, out existing))
+                    {
+                        trackedItemCount -= existing.Items.Count;
+                    }
+                    else
                     {
                         trackedTileCount++;
-                        trackedItemCount += mapTile.Items.Count;
-                        UpdateStats();
                     }
 
+                    trackedItemCount += mapTile.Items.Count;
                     mapTiles[tile.Location] = mapTile;
                 }
+                foreach (PacketCreature creature in p.Creatures)
+                {
+                    if (creature.Type == PacketCreatureType.Unknown)
+                    {
+                        if (!mapCreatures.ContainsKey(creature.Location))
+                        {
+                            mapCreatures.Add(creature.Location, creature);
+                        }
+                    }
+                }
+                UpdateStats();
             }
             return true;
         }

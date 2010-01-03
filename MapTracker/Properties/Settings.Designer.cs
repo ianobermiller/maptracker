@@ -22,5 +22,17 @@ namespace MapTracker.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool EnableHookProxy {
+            get {
+                return ((bool)(this["EnableHookProxy"]));
+            }
+            set {
+                this["EnableHookProxy"] = value;
+            }
+        }
     }
 }

@@ -50,6 +50,9 @@
             this.uxTrackCurrentFloor = new System.Windows.Forms.CheckBox();
             this.uxTrackSplashes = new System.Windows.Forms.CheckBox();
             this.uxTrackFromCam = new System.Windows.Forms.Button();
+            this.uxTrackSpawns = new System.Windows.Forms.CheckBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.uxTrackedCreatures = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -71,7 +74,7 @@
             // 
             this.uxWrite.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.uxWrite.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.uxWrite.Location = new System.Drawing.Point(258, 210);
+            this.uxWrite.Location = new System.Drawing.Point(259, 246);
             this.uxWrite.Name = "uxWrite";
             this.uxWrite.Size = new System.Drawing.Size(166, 44);
             this.uxWrite.TabIndex = 11;
@@ -85,9 +88,9 @@
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.uxLog);
-            this.groupBox1.Location = new System.Drawing.Point(12, 260);
+            this.groupBox1.Location = new System.Drawing.Point(12, 298);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(412, 187);
+            this.groupBox1.Size = new System.Drawing.Size(412, 180);
             this.groupBox1.TabIndex = 13;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Log";
@@ -99,7 +102,7 @@
             this.uxLog.Multiline = true;
             this.uxLog.Name = "uxLog";
             this.uxLog.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.uxLog.Size = new System.Drawing.Size(406, 168);
+            this.uxLog.Size = new System.Drawing.Size(406, 161);
             this.uxLog.TabIndex = 13;
             this.uxLog.Text = resources.GetString("uxLog.Text");
             // 
@@ -111,20 +114,22 @@
             this.groupBox2.Controls.Add(this.uxMapBoundsNW);
             this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Controls.Add(this.label4);
+            this.groupBox2.Controls.Add(this.uxTrackedCreatures);
+            this.groupBox2.Controls.Add(this.label6);
             this.groupBox2.Controls.Add(this.uxTrackedItems);
             this.groupBox2.Controls.Add(this.label2);
             this.groupBox2.Controls.Add(this.uxTrackedTiles);
             this.groupBox2.Controls.Add(this.label1);
             this.groupBox2.Location = new System.Drawing.Point(12, 7);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(240, 155);
+            this.groupBox2.Size = new System.Drawing.Size(240, 175);
             this.groupBox2.TabIndex = 14;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Statistics";
             // 
             // uxMapBoundsSE
             // 
-            this.uxMapBoundsSE.Location = new System.Drawing.Point(107, 121);
+            this.uxMapBoundsSE.Location = new System.Drawing.Point(107, 147);
             this.uxMapBoundsSE.Name = "uxMapBoundsSE";
             this.uxMapBoundsSE.ReadOnly = true;
             this.uxMapBoundsSE.Size = new System.Drawing.Size(127, 20);
@@ -134,7 +139,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(7, 124);
+            this.label5.Location = new System.Drawing.Point(7, 150);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(86, 13);
             this.label5.TabIndex = 2;
@@ -142,7 +147,7 @@
             // 
             // uxTrackedMapSize
             // 
-            this.uxTrackedMapSize.Location = new System.Drawing.Point(107, 69);
+            this.uxTrackedMapSize.Location = new System.Drawing.Point(107, 95);
             this.uxTrackedMapSize.Name = "uxTrackedMapSize";
             this.uxTrackedMapSize.ReadOnly = true;
             this.uxTrackedMapSize.Size = new System.Drawing.Size(127, 20);
@@ -151,7 +156,7 @@
             // 
             // uxMapBoundsNW
             // 
-            this.uxMapBoundsNW.Location = new System.Drawing.Point(107, 95);
+            this.uxMapBoundsNW.Location = new System.Drawing.Point(107, 121);
             this.uxMapBoundsNW.Name = "uxMapBoundsNW";
             this.uxMapBoundsNW.ReadOnly = true;
             this.uxMapBoundsNW.Size = new System.Drawing.Size(127, 20);
@@ -161,7 +166,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(7, 72);
+            this.label3.Location = new System.Drawing.Point(7, 98);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(94, 13);
             this.label3.TabIndex = 2;
@@ -170,7 +175,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(7, 98);
+            this.label4.Location = new System.Drawing.Point(7, 124);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(91, 13);
             this.label4.TabIndex = 0;
@@ -216,7 +221,7 @@
             // 
             this.uxReset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.uxReset.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.uxReset.Location = new System.Drawing.Point(259, 78);
+            this.uxReset.Location = new System.Drawing.Point(259, 90);
             this.uxReset.Name = "uxReset";
             this.uxReset.Size = new System.Drawing.Size(166, 44);
             this.uxReset.TabIndex = 12;
@@ -227,11 +232,12 @@
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.uxTrackMovable);
+            this.groupBox3.Controls.Add(this.uxTrackSpawns);
             this.groupBox3.Controls.Add(this.uxTrackCurrentFloor);
             this.groupBox3.Controls.Add(this.uxTrackSplashes);
-            this.groupBox3.Location = new System.Drawing.Point(15, 168);
+            this.groupBox3.Location = new System.Drawing.Point(12, 188);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(237, 86);
+            this.groupBox3.Size = new System.Drawing.Size(237, 104);
             this.groupBox3.TabIndex = 15;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Options";
@@ -270,7 +276,7 @@
             // 
             this.uxTrackFromCam.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.uxTrackFromCam.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.uxTrackFromCam.Location = new System.Drawing.Point(259, 144);
+            this.uxTrackFromCam.Location = new System.Drawing.Point(259, 168);
             this.uxTrackFromCam.Name = "uxTrackFromCam";
             this.uxTrackFromCam.Size = new System.Drawing.Size(166, 44);
             this.uxTrackFromCam.TabIndex = 12;
@@ -278,11 +284,41 @@
             this.uxTrackFromCam.UseVisualStyleBackColor = true;
             this.uxTrackFromCam.Click += new System.EventHandler(this.uxTrackFromCam_Click);
             // 
+            // uxTrackSpawns
+            // 
+            this.uxTrackSpawns.AutoSize = true;
+            this.uxTrackSpawns.Checked = true;
+            this.uxTrackSpawns.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.uxTrackSpawns.Location = new System.Drawing.Point(7, 81);
+            this.uxTrackSpawns.Name = "uxTrackSpawns";
+            this.uxTrackSpawns.Size = new System.Drawing.Size(135, 17);
+            this.uxTrackSpawns.TabIndex = 0;
+            this.uxTrackSpawns.Text = "Track creature spawns";
+            this.uxTrackSpawns.UseVisualStyleBackColor = true;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(7, 72);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(98, 13);
+            this.label6.TabIndex = 0;
+            this.label6.Text = "Tracked Creatures:";
+            // 
+            // uxTrackedCreatures
+            // 
+            this.uxTrackedCreatures.Location = new System.Drawing.Point(107, 69);
+            this.uxTrackedCreatures.Name = "uxTrackedCreatures";
+            this.uxTrackedCreatures.ReadOnly = true;
+            this.uxTrackedCreatures.Size = new System.Drawing.Size(127, 20);
+            this.uxTrackedCreatures.TabIndex = 1;
+            this.uxTrackedCreatures.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(436, 459);
+            this.ClientSize = new System.Drawing.Size(436, 490);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.uxTrackFromCam);
             this.Controls.Add(this.uxReset);
@@ -326,6 +362,9 @@
         private System.Windows.Forms.TextBox uxMapBoundsNW;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button uxTrackFromCam;
+        private System.Windows.Forms.TextBox uxTrackedCreatures;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.CheckBox uxTrackSpawns;
     }
 }
 
