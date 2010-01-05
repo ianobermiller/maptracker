@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using System.Linq;
 using Tibia.Constants;
 using Tibia.Objects;
 using Tibia.Packets;
 using Tibia.Packets.Incoming;
 using Tibia.Util;
+using System.Drawing;
 
 namespace MapTracker
 {
@@ -28,6 +30,7 @@ namespace MapTracker
         int trackedTileCount;
         int trackedItemCount;
         CamLoader camLoader = null;
+        MiniMap minimap = null;
         #endregion
 
         #region SplitPacket
@@ -84,6 +87,7 @@ namespace MapTracker
             }
 
             camLoader = new CamLoader(client, proxy, Log);
+            minimap = new MiniMap();
         }
 
         void Client_Exited(object sender, EventArgs e)
@@ -92,7 +96,6 @@ namespace MapTracker
             {
                 Stop();
                 uxStart.Enabled = false;
-                uxReset.Enabled = false;
             }));
         }
 
@@ -112,7 +115,7 @@ namespace MapTracker
         {
             IEnumerable<PacketCreature> creatures;
             if (uxTrackSpawns.Checked)
-                creatures = mapCreatures.Values;
+                creatures = mapCreatures.Values.Where(c => c != null);
             else
                 creatures = new List<PacketCreature>();
 
@@ -129,7 +132,8 @@ namespace MapTracker
 
         private void uxReset_Click(object sender, EventArgs e)
         {
-            Reset();
+            if (MessageBox.Show("Are you sure you want to clear all tracked tiles?", "Reset?", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                Reset();
         }
 
         private void uxTrackFromCam_Click(object sender, EventArgs e)
@@ -137,6 +141,15 @@ namespace MapTracker
             if (camLoader != null)
             {
                 camLoader.ShowDialog(this);
+            }
+        }
+
+        private void uxViewMiniMap_Click(object sender, EventArgs e)
+        {
+            if (minimap != null)
+            {
+                minimap.ShowMap(mapTiles.Values, GetMapSize(), mapBoundsNW, mapBoundsSE);
+                minimap.ShowDialog(this);
             }
         }
         #endregion
@@ -165,7 +178,6 @@ namespace MapTracker
             uxLog.Clear();
             uxStart.Text = "Stop Map Tracking";
             tracking = true;
-            uxReset.Enabled = false;
         }
 
         private void RemoveHooks()
@@ -199,11 +211,11 @@ namespace MapTracker
 
             uxStart.Text = "Start Map Tracking";
             tracking = false;
-            uxReset.Enabled = true;
         }
 
         private void Reset()
         {
+            mapCreatures.Clear();
             mapTiles.Clear();
             mapBoundsNW = Tibia.Objects.Location.Invalid;
             mapBoundsSE = Tibia.Objects.Location.Invalid;
@@ -237,18 +249,43 @@ namespace MapTracker
             bool trackMovable = uxTrackMovable.Checked;
             bool trackSplashes = uxTrackSplashes.Checked;
             bool trackCurrentFloor = uxTrackCurrentFloor.Checked;
+            bool enableRetracking = uxEnableRetracking.Checked;
+
+
             lock (this)
             {
                 MapPacket p = (MapPacket)packet;
+
+                foreach (PacketCreature creature in p.Creatures)
+                {
+                    if (creature.Type == PacketCreatureType.Unknown)
+                    {
+                        if (trackCurrentFloor && creature.Location.Z 
+                            != client.PlayerLocation.Z)
+                            continue;
+
+                        if (enableRetracking || !mapCreatures.ContainsKey(creature.Location))
+                        {
+                            mapCreatures.Add(creature.Location, creature);
+                        }
+                    }
+                }
+
                 foreach (Tile tile in p.Tiles)
                 {
-                    if (trackCurrentFloor && tile.Location.Z 
+                    if (trackCurrentFloor && tile.Location.Z
                         != client.PlayerLocation.Z)
+                        continue;
+
+                    OtMapTile existingMapTile = null;
+
+                    if (!enableRetracking && mapTiles.TryGetValue(tile.Location, out existingMapTile))
                         continue;
 
                     SetNewMapBounds(tile.Location);
                     OtMapTile mapTile = new OtMapTile();
                     mapTile.Location = tile.Location;
+                    mapTile.MapColor = Tibia.Misc.GetAutomapColor(tile.Ground.AutomapColor);
 
                     tile.Items.Reverse();
 
@@ -258,6 +295,10 @@ namespace MapTracker
                     {
                         if (item == null)
                             continue;
+
+                        Color color = Tibia.Misc.GetAutomapColor(item.AutomapColor);
+                        if (color != Color.Black)
+                            mapTile.MapColor = color;
 
                         ItemInfo info = ItemInfo.GetItemInfo((ushort)item.Id);
 
@@ -277,7 +318,7 @@ namespace MapTracker
                             mapTile.TileId = info.Id;
                             continue;
                         }
-
+                        
                         OtMapItem mapItem = new OtMapItem();
                         mapItem.AttrType = AttrType.None;
 
@@ -301,10 +342,9 @@ namespace MapTracker
                         mapTile.Items.Add(mapItem);
                     }
 
-                    OtMapTile existing = null;
-                    if (mapTiles.TryGetValue(tile.Location, out existing))
+                    if (existingMapTile != null)
                     {
-                        trackedItemCount -= existing.Items.Count;
+                        trackedItemCount -= existingMapTile.Items.Count;
                     }
                     else
                     {
@@ -313,15 +353,10 @@ namespace MapTracker
 
                     trackedItemCount += mapTile.Items.Count;
                     mapTiles[tile.Location] = mapTile;
-                }
-                foreach (PacketCreature creature in p.Creatures)
-                {
-                    if (creature.Type == PacketCreatureType.Unknown)
+
+                    if (!mapCreatures.ContainsKey(tile.Location))
                     {
-                        if (!mapCreatures.ContainsKey(creature.Location))
-                        {
-                            mapCreatures.Add(creature.Location, creature);
-                        }
+                        mapCreatures.Add(tile.Location, null);
                     }
                 }
                 UpdateStats();

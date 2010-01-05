@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using Tibia;
+﻿using System.Collections.Generic;
+using System.Drawing;
 using Tibia.Objects;
 
 namespace MapTracker
@@ -10,5 +9,6 @@ namespace MapTracker
         public Location Location;
         public ushort TileId;
         public List<OtMapItem> Items = new List<OtMapItem>();
+        public Color MapColor;
     }
 }
