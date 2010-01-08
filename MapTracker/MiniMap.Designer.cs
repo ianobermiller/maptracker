@@ -41,6 +41,7 @@
             this.uxMap.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.uxMap.TabIndex = 0;
             this.uxMap.TabStop = false;
+            this.uxMap.MouseMove += new System.Windows.Forms.MouseEventHandler(this.uxMap_MouseMove);
             // 
             // MiniMap
             // 

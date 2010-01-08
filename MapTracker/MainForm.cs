@@ -8,6 +8,7 @@ using Tibia.Packets;
 using Tibia.Packets.Incoming;
 using Tibia.Util;
 using System.Drawing;
+using System.Reflection;
 
 namespace MapTracker
 {
@@ -29,6 +30,7 @@ namespace MapTracker
         bool tracking;
         int trackedTileCount;
         int trackedItemCount;
+        int trackedCreatureCount;
         CamLoader camLoader = null;
         MiniMap minimap = null;
         #endregion
@@ -140,6 +142,7 @@ namespace MapTracker
         {
             if (camLoader != null)
             {
+                uxLog.Clear();
                 camLoader.ShowDialog(this);
             }
         }
@@ -150,6 +153,20 @@ namespace MapTracker
             {
                 minimap.ShowMap(mapTiles.Values, GetMapSize(), mapBoundsNW, mapBoundsSE);
                 minimap.ShowDialog(this);
+            }
+        }
+
+        private void MainForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.F1)
+            {
+                Version version = Assembly.GetExecutingAssembly().GetName().Version;
+                MessageBox.Show(
+                    "MapTracker v" + version.Major + "." + version.Minor + "." + version.Build,
+                    "About MapTracker",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
             }
         }
         #endregion
@@ -221,6 +238,7 @@ namespace MapTracker
             mapBoundsSE = Tibia.Objects.Location.Invalid;
             trackedTileCount = 0;
             trackedItemCount = 0;
+            trackedCreatureCount = 0;
             UpdateStats();
         }
 
@@ -230,7 +248,7 @@ namespace MapTracker
             {
                 uxTrackedTiles.Text = trackedTileCount.ToString("0,0");
                 uxTrackedItems.Text = trackedItemCount.ToString("0,0");
-                uxTrackedCreatures.Text = mapCreatures.Count.ToString("0,0");
+                uxTrackedCreatures.Text = trackedCreatureCount.ToString("0,0");
                 uxTrackedMapSize.Text = GetMapSize().ToString();
                 uxMapBoundsNW.Text = mapBoundsNW.ToString();
                 uxMapBoundsSE.Text = mapBoundsSE.ToString();
@@ -266,7 +284,8 @@ namespace MapTracker
 
                         if (enableRetracking || !mapCreatures.ContainsKey(creature.Location))
                         {
-                            mapCreatures.Add(creature.Location, creature);
+                            mapCreatures[creature.Location] = creature;
+                            trackedCreatureCount++;
                         }
                     }
                 }
@@ -278,8 +297,9 @@ namespace MapTracker
                         continue;
 
                     OtMapTile existingMapTile = null;
+                    bool isExisting = mapTiles.TryGetValue(tile.Location, out existingMapTile);
 
-                    if (!enableRetracking && mapTiles.TryGetValue(tile.Location, out existingMapTile))
+                    if (!enableRetracking && isExisting)
                         continue;
 
                     SetNewMapBounds(tile.Location);
@@ -287,7 +307,8 @@ namespace MapTracker
                     mapTile.Location = tile.Location;
                     mapTile.MapColor = Tibia.Misc.GetAutomapColor(tile.Ground.AutomapColor);
 
-                    tile.Items.Reverse();
+                    if (MapTracker.Properties.Settings.Default.ReverseItemOrder)
+                        tile.Items.Reverse();
 
                     tile.Items.Insert(0, tile.Ground);
 
@@ -308,7 +329,7 @@ namespace MapTracker
                             continue;
                         }
 
-                        if (!trackMovable && !item.GetFlag(Tibia.Addresses.DatItem.Flag.IsImmovable) && info.IsMoveable)
+                        if (!trackMovable && !item.GetFlag(Tibia.Addresses.DatItem.Flag.IsImmovable))
                             continue;
                         if (!trackSplashes && item.GetFlag(Tibia.Addresses.DatItem.Flag.IsSplash))
                             continue;
@@ -342,7 +363,7 @@ namespace MapTracker
                         mapTile.Items.Add(mapItem);
                     }
 
-                    if (existingMapTile != null)
+                    if (isExisting)
                     {
                         trackedItemCount -= existingMapTile.Items.Count;
                     }

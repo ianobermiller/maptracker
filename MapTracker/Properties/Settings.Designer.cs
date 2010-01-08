@@ -34,5 +34,17 @@ namespace MapTracker.Properties {
                 this["EnableHookProxy"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ReverseItemOrder {
+            get {
+                return ((bool)(this["ReverseItemOrder"]));
+            }
+            set {
+                this["ReverseItemOrder"] = value;
+            }
+        }
     }
 }

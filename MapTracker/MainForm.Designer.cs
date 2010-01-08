@@ -48,12 +48,12 @@
             this.label1 = new System.Windows.Forms.Label();
             this.uxReset = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.uxEnableRetracking = new System.Windows.Forms.CheckBox();
             this.uxTrackMovable = new System.Windows.Forms.CheckBox();
             this.uxTrackSpawns = new System.Windows.Forms.CheckBox();
             this.uxTrackCurrentFloor = new System.Windows.Forms.CheckBox();
             this.uxTrackSplashes = new System.Windows.Forms.CheckBox();
             this.uxTrackFromCam = new System.Windows.Forms.Button();
-            this.uxEnableRetracking = new System.Windows.Forms.CheckBox();
             this.uxViewMiniMap = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -99,10 +99,12 @@
             // 
             // uxLog
             // 
+            this.uxLog.BackColor = System.Drawing.SystemColors.Window;
             this.uxLog.Dock = System.Windows.Forms.DockStyle.Fill;
             this.uxLog.Location = new System.Drawing.Point(3, 16);
             this.uxLog.Multiline = true;
             this.uxLog.Name = "uxLog";
+            this.uxLog.ReadOnly = true;
             this.uxLog.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.uxLog.Size = new System.Drawing.Size(437, 161);
             this.uxLog.TabIndex = 13;
@@ -263,6 +265,16 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Options";
             // 
+            // uxEnableRetracking
+            // 
+            this.uxEnableRetracking.AutoSize = true;
+            this.uxEnableRetracking.Location = new System.Drawing.Point(157, 19);
+            this.uxEnableRetracking.Name = "uxEnableRetracking";
+            this.uxEnableRetracking.Size = new System.Drawing.Size(109, 17);
+            this.uxEnableRetracking.TabIndex = 0;
+            this.uxEnableRetracking.Text = "Enable retracking";
+            this.uxEnableRetracking.UseVisualStyleBackColor = true;
+            // 
             // uxTrackMovable
             // 
             this.uxTrackMovable.AutoSize = true;
@@ -317,16 +329,6 @@
             this.uxTrackFromCam.UseVisualStyleBackColor = true;
             this.uxTrackFromCam.Click += new System.EventHandler(this.uxTrackFromCam_Click);
             // 
-            // uxEnableRetracking
-            // 
-            this.uxEnableRetracking.AutoSize = true;
-            this.uxEnableRetracking.Location = new System.Drawing.Point(157, 19);
-            this.uxEnableRetracking.Name = "uxEnableRetracking";
-            this.uxEnableRetracking.Size = new System.Drawing.Size(109, 17);
-            this.uxEnableRetracking.TabIndex = 0;
-            this.uxEnableRetracking.Text = "Enable retracking";
-            this.uxEnableRetracking.UseVisualStyleBackColor = true;
-            // 
             // uxViewMiniMap
             // 
             this.uxViewMiniMap.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -352,9 +354,11 @@
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.uxWrite);
             this.Controls.Add(this.uxStart);
+            this.KeyPreview = true;
             this.Name = "MainForm";
             this.Text = "MapTracker";
             this.Load += new System.EventHandler(this.MainForm_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyDown);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);

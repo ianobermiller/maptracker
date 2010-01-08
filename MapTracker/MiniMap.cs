@@ -15,6 +15,9 @@ namespace MapTracker
         Bitmap[] levels;
         int currentLevel = 0;
         int maxLevel = 0;
+        Location mapSize;
+        Location mapBoundsNW;
+        Location mapBoundsSE;
         public MiniMap()
         {
             InitializeComponent();
@@ -29,6 +32,9 @@ namespace MapTracker
             }
 
             this.ClientSize = new Size(mapSize.X, mapSize.Y);
+            this.mapSize = mapSize;
+            this.mapBoundsNW = mapBoundsNW;
+            this.mapBoundsSE = mapBoundsSE;
             levels = new Bitmap[mapSize.Z];
             currentLevel = 0;
             maxLevel = mapBoundsSE.Z - mapBoundsNW.Z;
@@ -73,6 +79,13 @@ namespace MapTracker
             else if (currentLevel < 0)
                 currentLevel = 0;
             uxMap.Image = levels[currentLevel];
+        }
+
+        private void uxMap_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (maxLevel == -1)
+                return;
+            this.Text = "MiniMap " + mapBoundsNW.Offset(e.X, e.Y, currentLevel);
         }
     }
 }
